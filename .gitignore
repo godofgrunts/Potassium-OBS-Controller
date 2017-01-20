@@ -1,0 +1,17 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+temp/
+*.tcl
+client_secrets.json
+-oauth2.json
+images/p2-characters/*
+images/p1-characters/*
+*.txt
+p1-char.png
+p2-char.png
+gui.py-oauth2.json
+
+!images/p2-characters/characters.txt
+!images/p1-characters/characters.txt
