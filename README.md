@@ -1,12 +1,15 @@
 DEPENDENCIES
 ----
 
-Python 3.x
-python3-tk
-ffmpeg
+[Python 3.x](https://www.python.org/downloads/)
+
+Tkinter (comes with Windows Installation, python3-tk on Ubuntu, tk on Arch)
+
+ffmpeg (For Windows: https://ffmpeg.zeranoe.com/builds/ Ubuntu still uses 2.X which considers AAC to be experimental)
+
 pip3 install --upgrade google-api-python-client ffmpy
 
-Though not technically a requirement, you'll need OBS for this to be worth anything
+Though not technically a dependency, you'll need OBS (bulit for OBS Studio, might work on Classic) for this to be worth anything
 
 INSTRUCTIONS
 ----
@@ -16,9 +19,16 @@ Scroll down to AUTHORIZATION for setting that up.
 
 By default, POC expects F2 and F3 to be your start recording/stop recording keys respectively. You can edit the key in gui_support.py (just seach for F2 and F3)
 
-Edit gui_support.py's VIDEO_PATH variable to be the same as your recording path in OBS (it's the second line)
+Edit gui_support.py
 
-Put your images for the characters in poc/images/p1-characters and poc/images/p2-characters
+1. VIDEO_PATH variable to be the same as your recording path in OBS (it's the second line)
+2. youtube_description (right underneath VIDEO_PATH)
+3. youtube_keywords (right underneath youtube_description
+
+
+Put your images for the characters in images/p1-characters and images/p2-characters
+
+Images not included due to possible copyright issues that I don't feel like figuring out.
 
 By default, the program expects the images to be named the following:
 
@@ -83,12 +93,12 @@ By default, the program expects the images to be named the following:
 |Zelda.png|
 |Zero-Suit-Samus.png|
 
-You can edit these names in gui_support.py if you'd like.
+You can edit these names in gui_support.py for other games You'll need to edit the combobox variables in gui.py as well.
 
 AUTHORIZATION
 ----
 
-The package includes a default client_secrets.json file. If you plan to make a heavy use of the script, please create and use your own OAuth 2.0 file, it's a free service. Steps:
+The package includes a default client_secrets-sample.json file.
 
 IMPORTANT
 ======
@@ -103,7 +113,8 @@ IMPORTANT
 7. Edit the client_secrets-sample.json file for your client_id and client_secret
 8. Rename the client_secrets-sample.json file to client_secrets.json
 
-Note:
+Note
+----
 
 The first time you run the program, a browser will pop up informing you that you're trying to authorize Potassium OBS Controller to access your youtube. Just follow the prompts and make sure you choose the correct account that you want the program to upload too.
 
