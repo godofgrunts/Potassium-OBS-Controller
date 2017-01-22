@@ -9,15 +9,19 @@ ffmpeg (For Windows: https://ffmpeg.zeranoe.com/builds/ Ubuntu still uses 2.X wh
 
 pip3 install --upgrade google-api-python-client ffmpy
 
-Though not technically a dependency, you'll need OBS (bulit for OBS Studio, might work on Classic) for this to be worth anything
+For Windows:
+
+pip3 install --upgrade pypiwin32
+
+Though not technically a dependency, you'll need OBS (built for OBS Studio, might work on Classic) for this to be worth anything
 
 INSTRUCTIONS
 ----
 
-The absolute worse part of setting this up is getting your client_secrets.json file setup correctly. 
+The absolute worse part of setting this up is getting your client_secrets.json file setup correctly.
 Scroll down to AUTHORIZATION for setting that up.
 
-By default, POC expects F2 and F3 to be your start recording/stop recording keys respectively. You can edit the key in gui_support.py (just seach for F2 and F3)
+By default, POC expects F2 and F3 to be your start recording/stop recording keys respectively. You can edit the key in gui_support.py
 
 Edit gui_support.py
 
@@ -100,10 +104,6 @@ AUTHORIZATION
 
 The package includes a default client_secrets-sample.json file.
 
-IMPORTANT
-======
-**If ANYONE gets your client_secrets.json file they can upload anything they want to your channel!**
-
 1. Go to the Google console.
 2. Create project.
 3. Side menu: APIs & auth -> APIs
@@ -117,4 +117,3 @@ Note
 ----
 
 The first time you run the program, a browser will pop up informing you that you're trying to authorize Potassium OBS Controller to access your youtube. Just follow the prompts and make sure you choose the correct account that you want the program to upload too.
-

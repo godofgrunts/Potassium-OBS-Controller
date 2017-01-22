@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-VIDEO_PATH="/path/to/your/recording/directory"
+VIDEO_PATH="/path/to/obs/recording/directory"
 
 import os
 import sys
@@ -8,6 +8,26 @@ import time
 import ffmpy
 from shutil import copy
 from lib.upload_video import *
+
+try:
+    import win32api
+    import win32con
+except ImportError:
+    f = open('log.txt', 'w')
+    f.write('win32api not imported.')
+    f.close()
+
+try:
+    from Tkinter import *
+except ImportError:
+    from tkinter import *
+
+try:
+    import ttk
+    py3 = 0
+except ImportError:
+    import tkinter.ttk as ttk
+    py3 = 1
 
 VALID_PRIVACY_STATUSES = ("public", "private", "unlisted")
 
@@ -22,18 +42,6 @@ youtube_description = """Put the info you want in the description here
 You can even do multiple lines"""
 
 youtube_keywords ="Gaming,Super Smash Bros"
-
-try:
-    from Tkinter import *
-except ImportError:
-    from tkinter import *
-
-try:
-    import ttk
-    py3 = 0
-except ImportError:
-    import tkinter.ttk as ttk
-    py3 = 1
 
 def set_Tk_var():
     # These are Tk variables used passed to Tkinter and must be
@@ -212,6 +220,12 @@ def save_info():
     com2Name = open('comm2.txt', 'w')
     com2Name.write(Com2_Entry.get())
     com2Name.close()
+    com1T = open('comm1T.txt', 'w')
+    com1T.write(Com1T_Entry.get())
+    com1T.close()
+    com2T = open('comm2T.txt', 'w')
+    com2T.write(Com2T_Entry.get())
+    com2T.close()
     titleFile = open('title.txt', 'w')
     titleText = EventSH_Entry.get() + " [" + game.get() + "] - " + P1_Entry.get() + " (" + combobox1.get() + ") vs " + P2_Entry.get() + " (" + combobox2.get() + ") - " + Round_Entry.get()
     titleLen = len(titleText)
@@ -224,20 +238,23 @@ def save_info():
     titleFile.close()
 
 
-
+#TODO: Make this more OS agnostic. Probably need a OS check and set a variable
 def start_recording():
-    print("pressing f2")
-    subprocess.Popen(['xdotool search --name "OBS 17*" key F2'], shell=True)
-    #print('gui_support.start_recording')
-    #sys.stdout.flush()
+    print("Starting Recording")
+    win32api.keybd_event(0x71,0,0,0)
+    win32api.keybd_event(0x71,0 ,win32con.KEYEVENTF_KEYUP ,0)
 
+#TODO: Actually use ffmpy and ffmpeg to convert the .flv to mp4
 def stop_recording():
+    print("Stopping Recording")
     f = open('title.txt', 'r')
     newTitle = f.read()
     newName = VIDEO_PATH + "/" + newTitle + ".flv"
     f.close()
-    subprocess.Popen(['xdotool search --name "OBS 17*" key F3'], shell=True)
+    win32api.keybd_event(0x72,0,0,0)
+    win32api.keybd_event(0x72,0 ,win32con.KEYEVENTF_KEYUP ,0)
     time.sleep(3)
+    print("Renaming File")
     onlyfiles = [f for f in os.listdir(VIDEO_PATH) if os.path.isfile(os.path.join(VIDEO_PATH, f))]
     mtimes = [os.path.getmtime(VIDEO_PATH + '/' + f) for f in onlyfiles ]
     combine_dict = dict(zip(mtimes, onlyfiles))
