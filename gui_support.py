@@ -14,7 +14,7 @@ try:
     import win32con
 except ImportError:
     f = open('log.txt', 'w')
-    f.write('win32api not imported.')
+    f.write('win32api not imported.\nDid you install py')
     f.close()
 
 try:
@@ -242,6 +242,7 @@ def save_info():
 def start_recording():
     print("Starting Recording")
     win32api.keybd_event(0x71,0,0,0)
+    time.sleep(1) #some computers need this
     win32api.keybd_event(0x71,0 ,win32con.KEYEVENTF_KEYUP ,0)
 
 #TODO: Actually use ffmpy and ffmpeg to convert the .flv to mp4
@@ -252,13 +253,14 @@ def stop_recording():
     newName = VIDEO_PATH + "/" + newTitle + ".flv"
     f.close()
     win32api.keybd_event(0x72,0,0,0)
+    time.sleep(1) #some computers need this
     win32api.keybd_event(0x72,0 ,win32con.KEYEVENTF_KEYUP ,0)
     time.sleep(3)
     print("Renaming File")
     onlyfiles = [f for f in os.listdir(VIDEO_PATH) if os.path.isfile(os.path.join(VIDEO_PATH, f))]
     mtimes = [os.path.getmtime(VIDEO_PATH + '/' + f) for f in onlyfiles ]
     combine_dict = dict(zip(mtimes, onlyfiles))
-    videoFileName = VIDEO_PATH + "/" + str(combine_dict[(max(combine_dict))])
+    videoFileName = VIDEO_PATH + "/" + (list(filter((lambda x: x not in "<>:\"/\\|?*"),str(combine_dict[(max(combine_dict))])))) #removes illegal characters from file name < > : " / \ | ? *
     os.rename(videoFileName, newName)
     print("Uploading Video to Youtube...")
     args = argparser.parse_args(['--file', newName, '--title', newTitle, '--description', youtube_description, '--keywords', youtube_keywords ])
