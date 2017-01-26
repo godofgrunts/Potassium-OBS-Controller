@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-VIDEO_PATH="/path/to/obs/recording/directory"
+VIDEO_PATH="/home/rwhited/Videos/fake-event"
 
 import os
 import sys
@@ -8,6 +8,7 @@ import time
 import ffmpy
 from shutil import copy
 from lib.upload_video import *
+from _thread import start_new_thread
 
 try:
     import win32api
@@ -252,20 +253,20 @@ def stop_recording():
     newTitle = f.read()
     newName = VIDEO_PATH + "/" + newTitle + ".flv"
     f.close()
-    win32api.keybd_event(0x72,0,0,0)
+    #win32api.keybd_event(0x72,0,0,0)
     time.sleep(1) #some computers need this
-    win32api.keybd_event(0x72,0 ,win32con.KEYEVENTF_KEYUP ,0)
+    #win32api.keybd_event(0x72,0 ,win32con.KEYEVENTF_KEYUP ,0)
     time.sleep(3)
     print("Renaming File")
     onlyfiles = [f for f in os.listdir(VIDEO_PATH) if os.path.isfile(os.path.join(VIDEO_PATH, f))]
     mtimes = [os.path.getmtime(VIDEO_PATH + '/' + f) for f in onlyfiles ]
     combine_dict = dict(zip(mtimes, onlyfiles))
-    videoFileName = VIDEO_PATH + "/" + (list(filter((lambda x: x not in "<>:\"/\\|?*"),str(combine_dict[(max(combine_dict))])))) #removes illegal characters from file name < > : " / \ | ? *
+    videoFileName = VIDEO_PATH + "/" + list(filter((lambda x: x not in "<>:\"/\\|?*"),str(combine_dict[(max(combine_dict))]))) #removes illegal characters from file name < > : " / \ | ? *
     os.rename(videoFileName, newName)
     print("Uploading Video to Youtube...")
     args = argparser.parse_args(['--file', newName, '--title', newTitle, '--description', youtube_description, '--keywords', youtube_keywords ])
     youtube = get_authenticated_service(args)
-    initialize_upload(youtube, args)
+    start_new_thread(initialize_upload(youtube, args))
 
 def init(top, gui, *args, **kwargs):
     global w, top_level, root
