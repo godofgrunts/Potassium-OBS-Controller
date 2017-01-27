@@ -254,7 +254,6 @@ def start_recording():
     time.sleep(1) #some computers need this
     win32api.keybd_event(0x71,0 ,win32con.KEYEVENTF_KEYUP ,0)
 
-#TODO: Actually use ffmpy and ffmpeg to convert the .flv to mp4
 def stop_recording():
     print("Stopping Recording")
     f = open('title.txt', 'r')
