@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-VIDEO_PATH="/home/rwhited/Videos/fake-event"
+VIDEO_PATH="/path/to/OBS/recording/directory"
 
 import os
 import sys
@@ -15,7 +15,7 @@ try:
     import win32con
 except ImportError:
     f = open('log.txt', 'w')
-    f.write('win32api not imported.\nDid you install py')
+    f.write('win32api not imported.\nDid you install pypiwin32?')
     f.close()
 
 try:
@@ -32,6 +32,13 @@ except ImportError:
 
 VALID_PRIVACY_STATUSES = ("public", "private", "unlisted")
 
+'''
+These are the arguments for the "args" variable in the "stop_recording" function
+These can all be changed in that function or you can set the defaults here if you know they're never going to change for you
+
+For example, category is defaulted to "20" which is gaming since this program was built for streaming video games.
+'''
+
 argparser.add_argument("--file", required=True, help="Video file to upload")
 argparser.add_argument("--title", help="Video title", default="Test Title")
 argparser.add_argument("--description", help="Video description", default="Test Description")
@@ -42,6 +49,7 @@ argparser.add_argument("--privacyStatus", choices=VALID_PRIVACY_STATUSES, defaul
 youtube_description = """Put the info you want in the description here
 You can even do multiple lines"""
 
+#Seperated by commas
 youtube_keywords ="Gaming,Super Smash Bros"
 
 def set_Tk_var():
@@ -251,28 +259,25 @@ def stop_recording():
     print("Stopping Recording")
     f = open('title.txt', 'r')
     Title = f.read()
-    illegalTitle = listName = list(filter((lambda x: x not in "<>:\"/\\|?*"), Title))
+    illegalTitle = listName = list(filter((lambda x: x not in "<>:\"/\\|?*"), Title)) #removes illegal characters from file name < > : " / \ | ? *
     joinTitle = "".join(str(elm) for elm in illegalTitle)
     newName = VIDEO_PATH + "/" + joinTitle + ".flv"
-    print(newName)
     newNameConvert = VIDEO_PATH + "/" + joinTitle + ".mp4"
-    print(newNameConvert)
     f.close()
-    #win32api.keybd_event(0x72,0,0,0)
+    win32api.keybd_event(0x72,0,0,0)
     time.sleep(1) #some computers need this
-    #win32api.keybd_event(0x72,0 ,win32con.KEYEVENTF_KEYUP ,0)
+    win32api.keybd_event(0x72,0 ,win32con.KEYEVENTF_KEYUP ,0)
     time.sleep(3)
     print("Renaming File")
     onlyfiles = [f for f in os.listdir(VIDEO_PATH) if os.path.isfile(os.path.join(VIDEO_PATH, f))]
     mtimes = [os.path.getmtime(VIDEO_PATH + '/' + f) for f in onlyfiles ]
     combine_dict = dict(zip(mtimes, onlyfiles))
     listName = list(filter((lambda x: x not in "<>:\"/\\|?*"),str(combine_dict[(max(combine_dict))]))) #removes illegal characters from file name < > : " / \ | ? *
-    print(listName)
     joinName = "".join(str(elm) for elm in listName)
-    print(joinName)
     videoFileName = VIDEO_PATH + "/" + joinName
     print(videoFileName)
     os.rename(videoFileName, newName)
+    print("File renamed to " + newName)
     '''
     #This takes to long. Need to add it to upload_video.py in the future.
     ff = ffmpy.FFmpeg(
@@ -281,7 +286,6 @@ def stop_recording():
     )
     ff.run()
     '''
-    print("Uploading Video to Youtube...")
     args = argparser.parse_args(['--file', newName, '--title', Title, '--description', youtube_description, '--keywords', youtube_keywords ])
     youtube = get_authenticated_service(args)
     #TODO This is a deprecated and needs to be fixed
