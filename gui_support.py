@@ -250,8 +250,13 @@ def start_recording():
 def stop_recording():
     print("Stopping Recording")
     f = open('title.txt', 'r')
-    newTitle = f.read()
-    newName = VIDEO_PATH + "/" + newTitle + ".flv"
+    Title = f.read()
+    illegalTitle = listName = list(filter((lambda x: x not in "<>:\"/\\|?*"), Title))
+    joinTitle = "".join(str(elm) for elm in illegalTitle)
+    newName = VIDEO_PATH + "/" + joinTitle + ".flv"
+    print(newName)
+    newNameConvert = VIDEO_PATH + "/" + joinTitle + ".mp4"
+    print(newNameConvert)
     f.close()
     #win32api.keybd_event(0x72,0,0,0)
     time.sleep(1) #some computers need this
@@ -261,12 +266,26 @@ def stop_recording():
     onlyfiles = [f for f in os.listdir(VIDEO_PATH) if os.path.isfile(os.path.join(VIDEO_PATH, f))]
     mtimes = [os.path.getmtime(VIDEO_PATH + '/' + f) for f in onlyfiles ]
     combine_dict = dict(zip(mtimes, onlyfiles))
-    videoFileName = VIDEO_PATH + "/" + list(filter((lambda x: x not in "<>:\"/\\|?*"),str(combine_dict[(max(combine_dict))]))) #removes illegal characters from file name < > : " / \ | ? *
+    listName = list(filter((lambda x: x not in "<>:\"/\\|?*"),str(combine_dict[(max(combine_dict))]))) #removes illegal characters from file name < > : " / \ | ? *
+    print(listName)
+    joinName = "".join(str(elm) for elm in listName)
+    print(joinName)
+    videoFileName = VIDEO_PATH + "/" + joinName
+    print(videoFileName)
     os.rename(videoFileName, newName)
+    '''
+    #This takes to long. Need to add it to upload_video.py in the future.
+    ff = ffmpy.FFmpeg(
+        inputs={newName: None},
+        outputs={newNameConvert: '-c copy'}
+    )
+    ff.run()
+    '''
     print("Uploading Video to Youtube...")
-    args = argparser.parse_args(['--file', newName, '--title', newTitle, '--description', youtube_description, '--keywords', youtube_keywords ])
+    args = argparser.parse_args(['--file', newName, '--title', Title, '--description', youtube_description, '--keywords', youtube_keywords ])
     youtube = get_authenticated_service(args)
-    start_new_thread(initialize_upload(youtube, args))
+    #TODO This is a deprecated and needs to be fixed
+    start_new_thread(initialize_upload, (youtube, args))
 
 def init(top, gui, *args, **kwargs):
     global w, top_level, root
