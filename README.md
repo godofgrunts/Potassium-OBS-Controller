@@ -1,3 +1,5 @@
+![Screenshot](/images/screenshots/poc-screenshot.png)
+
 DEPENDENCIES
 ----
 

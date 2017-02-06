@@ -26,6 +26,8 @@ def vp_start_gui():
     gui_support.set_Tk_var()
     top = Potassium_OBS_Controller (root)
     gui_support.init(root, top)
+    img = Image("photo", file="images/icon/PotasKT.png")
+    root.tk.call('wm','iconphoto',root._w,img)
     root.mainloop()
 
 w = None
